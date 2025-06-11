@@ -1,6 +1,7 @@
 package com.example.HMS.Controller;
 
 import com.example.HMS.DTO.BillRequestDTO;
+import com.example.HMS.DTO.BillResponseDTO;
 import com.example.HMS.Entity.Bill;
 import com.example.HMS.Service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,38 +9,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/bills")
+@RequestMapping("/bills")
 public class BillController {
 
     @Autowired
     private BillService billService;
 
-    @PostMapping
-    public ResponseEntity<Bill> createBill(@RequestBody BillRequestDTO dto) {
-        Bill bill = new Bill();
-        bill.setAmount(dto.getAmount());
-        bill.setDate(dto.getDate());
-        bill.setBillDetail(dto.getBillDetail());
-        return ResponseEntity.ok(billService.saveBill(bill, dto.getPatientId()));
+    @PostMapping("/create")
+    public BillResponseDTO createBill(@RequestBody BillRequestDTO dto) {
+        return billService.createBill(dto);
     }
 
     @GetMapping
-    public List<Bill> getAllBills() {
+    public List<BillResponseDTO> getAllBills() {
         return billService.getAllBills();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bill> getBillById(@PathVariable int id) {
-        Bill bill = billService.getBillById(id);
-        return bill != null ? ResponseEntity.ok(bill) : ResponseEntity.notFound().build();
+    public BillResponseDTO getBillById(@PathVariable int id) {
+        return billService.getBillById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBill(@PathVariable int id) {
+    @DeleteMapping("/delete/{id}")
+    public void deleteBill(@PathVariable int id) {
         billService.deleteBill(id);
-        return ResponseEntity.noContent().build();
     }
 }
 

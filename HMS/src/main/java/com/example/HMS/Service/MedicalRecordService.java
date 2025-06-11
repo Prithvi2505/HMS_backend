@@ -1,5 +1,7 @@
 package com.example.HMS.Service;
 
+import com.example.HMS.DTO.MedicalRecordRequestDTO;
+import com.example.HMS.DTO.MedicalRecordResponseDTO;
 import com.example.HMS.Entity.MedicalRecord;
 import com.example.HMS.Entity.Patient;
 import com.example.HMS.Repository.MedicalRecordRepository;
@@ -8,32 +10,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicalRecordService {
 
     @Autowired
-    private MedicalRecordRepository medicalRecordRepository;
-
+    private MedicalRecordRepository recordRepository;
     @Autowired
     private PatientRepository patientRepository;
 
-    public MedicalRecord saveMedicalRecord(MedicalRecord record, int patientId) {
-        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Patient not found"));
-        record.setPatient(patient);
-        return medicalRecordRepository.save(record);
+    public MedicalRecordResponseDTO createMedicalRecord(MedicalRecordRequestDTO dto) {
+        MedicalRecord record = new MedicalRecord();
+        record.setDiagnosis(dto.getDiagnosis());
+        record.setYearOfDiagnosis(dto.getYearOfDiagnosis());
+        record.setMedicineUsed(dto.getMedicineUsed());
+        record.setPatient(patientRepository.findById(dto.getPatientId()).orElseThrow());
+        return toResponseDTO(recordRepository.save(record));
     }
 
-    public List<MedicalRecord> getAllMedicalRecords() {
-        return medicalRecordRepository.findAll();
+    public List<MedicalRecordResponseDTO> getAllMedicalRecords() {
+        return recordRepository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());
     }
 
-    public MedicalRecord getMedicalRecordById(int id) {
-        return medicalRecordRepository.findById(id).orElse(null);
+    public MedicalRecordResponseDTO getMedicalRecordById(int id) {
+        return toResponseDTO(recordRepository.findById(id).orElseThrow());
     }
 
     public void deleteMedicalRecord(int id) {
-        medicalRecordRepository.deleteById(id);
+        recordRepository.deleteById(id);
+    }
+
+    private MedicalRecordResponseDTO toResponseDTO(MedicalRecord record) {
+        MedicalRecordResponseDTO dto = new MedicalRecordResponseDTO();
+        dto.setId(record.getId());
+        dto.setDiagnosis(record.getDiagnosis());
+        dto.setYearOfDiagnosis(record.getYearOfDiagnosis());
+        dto.setMedicineUsed(record.getMedicineUsed());
+        dto.setPatientId(record.getPatient().getId());
+        return dto;
     }
 }
 

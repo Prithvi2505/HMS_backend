@@ -1,5 +1,7 @@
 package com.example.HMS.Service;
 
+import com.example.HMS.DTO.PatientRequestDTO;
+import com.example.HMS.DTO.PatientResponseDTO;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Entity.Patient;
 import com.example.HMS.Entity.Room;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
@@ -23,40 +27,64 @@ public class PatientService {
     @Autowired
     private RoomRepository roomRepository;
 
-    public Patient savePatient(Patient patient) {
-        return patientRepository.save(patient);
+    public PatientResponseDTO createPatient(PatientRequestDTO dto) {
+        Patient patient = new Patient(dto.getName(), dto.getEmail(), dto.getAge(), dto.getGender(),
+                dto.getMobileNo(), dto.getCity(), dto.getPassword());
+        return toResponseDTO(patientRepository.save(patient));
     }
 
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+    public List<PatientResponseDTO> getAllPatients() {
+        return patientRepository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    public Patient getPatientById(int id) {
-        return patientRepository.findById(id).orElse(null);
+    public PatientResponseDTO getPatientById(int id) {
+        Patient patient = patientRepository.findById(id).orElseThrow();
+        return toResponseDTO(patient);
+    }
+
+    public PatientResponseDTO updatePatient(int id, PatientRequestDTO dto) {
+        Patient patient = patientRepository.findById(id).orElseThrow();
+        patient.setName(dto.getName());
+        patient.setEmail(dto.getEmail());
+        patient.setAge(dto.getAge());
+        patient.setGender(dto.getGender());
+        patient.setMobileNo(dto.getMobileNo());
+        patient.setCity(dto.getCity());
+        patient.setPassword(dto.getPassword());
+        return toResponseDTO(patientRepository.save(patient));
     }
 
     public void deletePatient(int id) {
         patientRepository.deleteById(id);
     }
 
-    public Patient assignDoctorToPatient(int patientId, int doctorId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
-
+    public PatientResponseDTO assignDoctor(int patientId, int doctorId) {
+        Patient patient = patientRepository.findById(patientId).orElseThrow();
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         patient.setDoctor(doctor);
-        return patientRepository.save(patient);
+        return toResponseDTO(patientRepository.save(patient));
     }
 
-    public Patient assignRoomToPatient(int patientId, int roomId) {
-        Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-
+    public PatientResponseDTO assignRoom(int patientId, int roomId) {
+        Patient patient = patientRepository.findById(patientId).orElseThrow();
+        Room room = roomRepository.findById(roomId).orElseThrow();
         patient.setRoom(room);
-        return patientRepository.save(patient);
+        return toResponseDTO(patientRepository.save(patient));
+    }
+
+    private PatientResponseDTO toResponseDTO(Patient patient) {
+        PatientResponseDTO response = new PatientResponseDTO();
+        response.setId(patient.getId());
+        response.setName(patient.getName());
+        response.setEmail(patient.getEmail());
+        response.setAge(patient.getAge());
+        response.setGender(patient.getGender());
+        response.setMobileNo(patient.getMobileNo());
+        response.setCity(patient.getCity());
+        return response;
     }
 }
 

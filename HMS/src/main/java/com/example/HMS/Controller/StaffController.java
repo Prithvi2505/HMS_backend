@@ -1,6 +1,7 @@
 package com.example.HMS.Controller;
 
 import com.example.HMS.DTO.StaffRequestDTO;
+import com.example.HMS.DTO.StaffResponseDTO;
 import com.example.HMS.Entity.Staff;
 import com.example.HMS.Service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/staff")
@@ -16,32 +18,29 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
-    @PostMapping
-    public ResponseEntity<Staff> createStaff(@RequestBody StaffRequestDTO dto) {
-        Staff staff = new Staff(dto.getName(), dto.getEmail(), dto.getGender(), dto.getType(), dto.getPassword());
-        return ResponseEntity.ok(staffService.saveStaff(staff));
+    @PostMapping("/create")
+    public StaffResponseDTO createStaff(@RequestBody StaffRequestDTO dto) {
+        return staffService.createStaff(dto);
     }
 
     @GetMapping
-    public List<Staff> getAllStaff() {
+    public List<StaffResponseDTO> getAllStaff() {
         return staffService.getAllStaff();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Staff> getStaffById(@PathVariable int id) {
-        Staff staff = staffService.getStaffById(id);
-        return staff != null ? ResponseEntity.ok(staff) : ResponseEntity.notFound().build();
+    public StaffResponseDTO getStaffById(@PathVariable int id) {
+        return staffService.getStaffById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStaff(@PathVariable int id) {
+    @PutMapping("/assign-room/{staffId}/{roomId}")
+    public StaffResponseDTO assignRoomToStaff(@PathVariable int staffId, @PathVariable int roomId) {
+        return staffService.assignRoom(staffId, roomId);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteStaff(@PathVariable int id) {
         staffService.deleteStaff(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{staffId}/assign-room")
-    public ResponseEntity<Staff> assignRoom(@PathVariable int staffId, @RequestParam int roomId) {
-        return ResponseEntity.ok(staffService.assignRoomToStaff(staffId, roomId));
     }
 }
 

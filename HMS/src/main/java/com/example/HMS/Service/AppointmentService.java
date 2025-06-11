@@ -1,5 +1,7 @@
 package com.example.HMS.Service;
 
+import com.example.HMS.DTO.AppointmentRequestDTO;
+import com.example.HMS.DTO.AppointmentResponseDTO;
 import com.example.HMS.Entity.Appointment;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Entity.Patient;
@@ -10,39 +12,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
-
+    @Autowired
+    private DoctorRepository doctorRepository;
     @Autowired
     private PatientRepository patientRepository;
 
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    public Appointment saveAppointment(Appointment appointment, int patientId, int doctorId) {
-        Patient patient = patientRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Patient not found"));
-        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new RuntimeException("Doctor not found"));
-
-        appointment.setPatient(patient);
-        appointment.setDoctor(doctor);
-
-        return appointmentRepository.save(appointment);
+    public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
+        Appointment appt = new Appointment();
+        appt.setDate(dto.getDate());
+        appt.setTime(dto.getTime());
+        appt.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow());
+        appt.setPatient(patientRepository.findById(dto.getPatientId()).orElseThrow());
+        return toResponseDTO(appointmentRepository.save(appt));
     }
 
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<AppointmentResponseDTO> getAllAppointments() {
+        return appointmentRepository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());
     }
 
-    public Appointment getAppointmentById(int id) {
-        return appointmentRepository.findById(id).orElse(null);
+    public AppointmentResponseDTO getAppointmentById(int id) {
+        return toResponseDTO(appointmentRepository.findById(id).orElseThrow());
     }
 
     public void deleteAppointment(int id) {
         appointmentRepository.deleteById(id);
+    }
+
+    private AppointmentResponseDTO toResponseDTO(Appointment appt) {
+        AppointmentResponseDTO dto = new AppointmentResponseDTO();
+        dto.setId(appt.getId());
+        dto.setDate(appt.getDate());
+        dto.setTime(appt.getTime());
+        dto.setDoctorId(appt.getDoctor().getId());
+        dto.setPatientId(appt.getPatient().getId());
+        return dto;
     }
 }
 
