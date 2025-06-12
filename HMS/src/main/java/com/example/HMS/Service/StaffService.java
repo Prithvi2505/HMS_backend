@@ -7,6 +7,7 @@ import com.example.HMS.Entity.Staff;
 import com.example.HMS.Repository.RoomRepository;
 import com.example.HMS.Repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +23,17 @@ public class StaffService {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired private BCryptPasswordEncoder passwordEncoder;
+
+
     public StaffResponseDTO createStaff(StaffRequestDTO dto) {
-        Staff staff = new Staff(dto.getName(), dto.getEmail(), dto.getGender(), dto.getType(), dto.getPassword());
+        Staff staff = new Staff();
+        staff.setName(dto.getName());
+        staff.setEmail(dto.getEmail());
+        staff.setType(dto.getType());
+        staff.setGender(dto.getGender());
+        // Encrypt password
+        staff.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(staffRepository.save(staff));
     }
 

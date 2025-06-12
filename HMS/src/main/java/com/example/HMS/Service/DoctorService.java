@@ -5,6 +5,7 @@ import com.example.HMS.DTO.DoctorResponseDTO;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +16,16 @@ import java.util.stream.Collectors;
 public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
+    @Autowired private BCryptPasswordEncoder passwordEncoder;
 
     public DoctorResponseDTO createDoctor(DoctorRequestDTO dto) {
-        Doctor doctor = new Doctor(dto.getName(), dto.getEmail(), dto.getSpecialization(), dto.getYearOfExperience(), dto.getPassword());
+        Doctor doctor = new Doctor();
+        doctor.setName(dto.getName());
+        doctor.setEmail(dto.getEmail());
+        doctor.setSpecialization(dto.getSpecialization());
+        doctor.setYearOfExperience(dto.getYearOfExperience());
+        // Encrypt password
+        doctor.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(doctorRepository.save(doctor));
     }
 
@@ -36,7 +44,7 @@ public class DoctorService {
         doctor.setEmail(dto.getEmail());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
-        doctor.setPassword(dto.getPassword());
+        doctor.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(doctorRepository.save(doctor));
     }
 

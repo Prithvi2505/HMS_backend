@@ -35,12 +35,12 @@ public class Patient {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "doctorId",nullable = false)
+    @JoinColumn(name = "doctor_id",nullable = true)
     @JsonIgnore
     private Doctor doctor;
 
     @ManyToOne
-    @JoinColumn(name = "roomId",nullable = false)
+    @JoinColumn(name = "room_id",nullable = true)
     @JsonIgnore
     private Room room;
 

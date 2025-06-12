@@ -9,6 +9,7 @@ import com.example.HMS.Repository.DoctorRepository;
 import com.example.HMS.Repository.PatientRepository;
 import com.example.HMS.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +27,17 @@ public class PatientService {
 
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired private BCryptPasswordEncoder passwordEncoder;
 
     public PatientResponseDTO createPatient(PatientRequestDTO dto) {
-        Patient patient = new Patient(dto.getName(), dto.getEmail(), dto.getAge(), dto.getGender(),
-                dto.getMobileNo(), dto.getCity(), dto.getPassword());
+        Patient patient = new Patient();
+        patient.setName(dto.getName());
+        patient.setEmail(dto.getEmail());
+        patient.setAge(dto.getAge());
+        patient.setGender(dto.getGender());
+        patient.setMobileNo(dto.getMobileNo());
+        patient.setCity(dto.getCity());
+        patient.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(patientRepository.save(patient));
     }
 
@@ -53,7 +61,7 @@ public class PatientService {
         patient.setGender(dto.getGender());
         patient.setMobileNo(dto.getMobileNo());
         patient.setCity(dto.getCity());
-        patient.setPassword(dto.getPassword());
+        patient.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(patientRepository.save(patient));
     }
 
