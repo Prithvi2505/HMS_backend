@@ -6,6 +6,7 @@ import com.example.HMS.Entity.Bill;
 import com.example.HMS.Service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,21 +20,25 @@ public class BillController {
     private BillService billService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public BillResponseDTO createBill(@RequestBody BillRequestDTO dto) {
         return billService.createBill(dto);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public List<BillResponseDTO> getAllBills() {
         return billService.getAllBills();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public BillResponseDTO getBillById(@PathVariable int id) {
         return billService.getBillById(id);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteBill(@PathVariable int id) {
         billService.deleteBill(id);
     }

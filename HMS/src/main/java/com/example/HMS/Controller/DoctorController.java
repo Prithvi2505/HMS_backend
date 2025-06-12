@@ -6,6 +6,7 @@ import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,21 +25,25 @@ public class DoctorController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public List<DoctorResponseDTO> getAllDoctors() {
         return doctorService.getAllDoctors();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public DoctorResponseDTO getDoctorById(@PathVariable int id) {
         return doctorService.getDoctorById(id);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public DoctorResponseDTO updateDoctor(@PathVariable int id, @RequestBody DoctorRequestDTO dto) {
         return doctorService.updateDoctor(id, dto);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteDoctor(@PathVariable int id) {
         doctorService.deleteDoctor(id);
     }

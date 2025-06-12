@@ -1,6 +1,6 @@
 package com.example.HMS.DTO;
 
-public class LoginRequestDTO   {
+public class LoginRequestDTO {
     private String email;
     private String password;
     private String role;
@@ -38,3 +38,4 @@ public class LoginRequestDTO   {
         this.role = role;
     }
 }
+

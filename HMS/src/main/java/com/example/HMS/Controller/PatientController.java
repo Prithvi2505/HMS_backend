@@ -6,6 +6,7 @@ import com.example.HMS.Entity.Patient;
 import com.example.HMS.Service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,31 +24,37 @@ public class PatientController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public List<PatientResponseDTO> getAllPatients() {
         return patientService.getAllPatients();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public PatientResponseDTO getPatientById(@PathVariable int id) {
         return patientService.getPatientById(id);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public PatientResponseDTO updatePatient(@PathVariable int id, @RequestBody PatientRequestDTO dto) {
         return patientService.updatePatient(id, dto);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public void deletePatient(@PathVariable int id) {
         patientService.deletePatient(id);
     }
 
     @PutMapping("/{patientId}/assign-doctor/{doctorId}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public PatientResponseDTO assignDoctor(@PathVariable int patientId, @PathVariable int doctorId) {
         return patientService.assignDoctor(patientId, doctorId);
     }
 
     @PutMapping("/{patientId}/assign-room/{roomId}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public PatientResponseDTO assignRoom(@PathVariable int patientId, @PathVariable int roomId) {
         return patientService.assignRoom(patientId, roomId);
     }

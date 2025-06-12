@@ -6,6 +6,7 @@ import com.example.HMS.Entity.Staff;
 import com.example.HMS.Service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,21 +25,25 @@ public class StaffController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public List<StaffResponseDTO> getAllStaff() {
         return staffService.getAllStaff();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public StaffResponseDTO getStaffById(@PathVariable int id) {
         return staffService.getStaffById(id);
     }
 
     @PutMapping("/assign-room/{staffId}/{roomId}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public StaffResponseDTO assignRoomToStaff(@PathVariable int staffId, @PathVariable int roomId) {
         return staffService.assignRoom(staffId, roomId);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteStaff(@PathVariable int id) {
         staffService.deleteStaff(id);
     }
