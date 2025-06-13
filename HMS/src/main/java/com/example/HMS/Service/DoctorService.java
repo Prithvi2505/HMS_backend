@@ -2,9 +2,11 @@ package com.example.HMS.Service;
 
 import com.example.HMS.DTO.DoctorRequestDTO;
 import com.example.HMS.DTO.DoctorResponseDTO;
+import com.example.HMS.DTO.DoctorUpdateRequestDTO;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
     @Autowired private BCryptPasswordEncoder passwordEncoder;
+    @Autowired private AuthUserDetailsService authUserDetailsService;
 
     public DoctorResponseDTO createDoctor(DoctorRequestDTO dto) {
         Doctor doctor = new Doctor();
@@ -38,13 +41,18 @@ public class DoctorService {
         return toResponseDTO(doctor);
     }
 
-    public DoctorResponseDTO updateDoctor(int id, DoctorRequestDTO dto) {
+    public DoctorResponseDTO updateDoctor(int id, DoctorUpdateRequestDTO dto) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (role.equals("DOCTOR") && id != loggedInUserId) {
+            throw new AccessDeniedException("You can only update your own profile");
+        }
+
         Doctor doctor = doctorRepository.findById(id).orElseThrow();
         doctor.setName(dto.getName());
-        doctor.setEmail(dto.getEmail());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
-        doctor.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(doctorRepository.save(doctor));
     }
 

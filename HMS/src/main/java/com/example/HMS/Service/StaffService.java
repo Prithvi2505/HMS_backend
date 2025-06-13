@@ -1,12 +1,13 @@
 package com.example.HMS.Service;
 
-import com.example.HMS.DTO.StaffRequestDTO;
-import com.example.HMS.DTO.StaffResponseDTO;
+import com.example.HMS.DTO.*;
+import com.example.HMS.Entity.Patient;
 import com.example.HMS.Entity.Room;
 import com.example.HMS.Entity.Staff;
 import com.example.HMS.Repository.RoomRepository;
 import com.example.HMS.Repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class StaffService {
     private RoomRepository roomRepository;
 
     @Autowired private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired private AuthUserDetailsService authUserDetailsService;
 
 
     public StaffResponseDTO createStaff(StaffRequestDTO dto) {
@@ -50,6 +53,22 @@ public class StaffService {
         Staff staff = staffRepository.findById(staffId).orElseThrow();
         Room room = roomRepository.findById(roomId).orElseThrow();
         staff.getRooms().add(room);
+        return toResponseDTO(staffRepository.save(staff));
+    }
+    public StaffResponseDTO updateStaff(int id, StaffUpdateRequestDTO dto) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (role.equals("STAFF") && id != loggedInUserId) {
+            throw new AccessDeniedException("You can only update your own profile");
+        }
+
+        Staff staff = staffRepository.findById(id).orElseThrow();
+
+        staff.setName(dto.getName());
+        staff.setGender(dto.getGender());
+        staff.setType(dto.getType());
+
         return toResponseDTO(staffRepository.save(staff));
     }
 

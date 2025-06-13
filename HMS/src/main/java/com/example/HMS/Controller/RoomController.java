@@ -4,6 +4,7 @@ import com.example.HMS.DTO.RoomRequestDTO;
 import com.example.HMS.DTO.RoomResponseDTO;
 import com.example.HMS.Entity.Room;
 import com.example.HMS.Service.RoomService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class RoomController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public RoomResponseDTO createRoom(@RequestBody RoomRequestDTO dto) {
+    public RoomResponseDTO createRoom(@Valid @RequestBody RoomRequestDTO dto) {
         return roomService.createRoom(dto);
     }
 
@@ -39,7 +40,7 @@ public class RoomController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public RoomResponseDTO updateRoom(@PathVariable int id, @RequestBody RoomRequestDTO dto) {
+    public RoomResponseDTO updateRoom(@Valid @PathVariable int id, @RequestBody RoomRequestDTO dto) {
         return roomService.updateRoom(id, dto);
     }
 

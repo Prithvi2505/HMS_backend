@@ -2,8 +2,10 @@ package com.example.HMS.Controller;
 
 import com.example.HMS.DTO.PatientRequestDTO;
 import com.example.HMS.DTO.PatientResponseDTO;
+import com.example.HMS.DTO.PatientUpdateRequestDTO;
 import com.example.HMS.Entity.Patient;
 import com.example.HMS.Service.PatientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +21,7 @@ public class PatientController {
     private PatientService patientService;
 
     @PostMapping("/create")
-    public PatientResponseDTO createPatient(@RequestBody PatientRequestDTO dto) {
+    public PatientResponseDTO createPatient(@Valid @RequestBody PatientRequestDTO dto) {
         return patientService.createPatient(dto);
     }
 
@@ -37,7 +39,7 @@ public class PatientController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
-    public PatientResponseDTO updatePatient(@PathVariable int id, @RequestBody PatientRequestDTO dto) {
+    public PatientResponseDTO updatePatient(@Valid @PathVariable int id, @RequestBody PatientUpdateRequestDTO dto) {
         return patientService.updatePatient(id, dto);
     }
 

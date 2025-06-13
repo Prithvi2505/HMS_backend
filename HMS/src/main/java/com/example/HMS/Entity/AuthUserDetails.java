@@ -8,14 +8,16 @@ import java.util.*;
 
 public class AuthUserDetails implements UserDetails {
 
+    private int userId;
     private String email;
     private String password;
     private String role;
 
-    public AuthUserDetails(String email, String password, String role) {
+    public AuthUserDetails(String email, String password, String role, int userId) {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.userId = userId;
     }
 
     @Override
@@ -32,6 +34,14 @@ public class AuthUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     // These can be used for account expiration/locking logic

@@ -4,6 +4,7 @@ import com.example.HMS.DTO.AppointmentRequestDTO;
 import com.example.HMS.DTO.AppointmentResponseDTO;
 import com.example.HMS.Entity.Appointment;
 import com.example.HMS.Service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class AppointmentController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
-    public AppointmentResponseDTO createAppointment(@RequestBody AppointmentRequestDTO dto) {
+    public AppointmentResponseDTO createAppointment(@Valid @RequestBody AppointmentRequestDTO dto) {
         return appointmentService.createAppointment(dto);
     }
 

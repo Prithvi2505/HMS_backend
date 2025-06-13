@@ -1,11 +1,17 @@
 package com.example.HMS.DTO;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.sql.Time;
 import java.util.Date;
 
 public class AppointmentRequestDTO {
+    @NotNull(message = "Date is required")
     private Date date;
+
+    @NotNull(message = "Time is required")
     private Time time;
+
     private int doctorId;
     private int patientId;
 

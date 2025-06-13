@@ -4,6 +4,7 @@ import com.example.HMS.DTO.MedicalRecordRequestDTO;
 import com.example.HMS.DTO.MedicalRecordResponseDTO;
 import com.example.HMS.Entity.MedicalRecord;
 import com.example.HMS.Service.MedicalRecordService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class MedicalRecordController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
-    public MedicalRecordResponseDTO createMedicalRecord(@RequestBody MedicalRecordRequestDTO dto) {
+    public MedicalRecordResponseDTO createMedicalRecord(@Valid @RequestBody MedicalRecordRequestDTO dto) {
         return medicalRecordService.createMedicalRecord(dto);
     }
 

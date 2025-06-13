@@ -2,6 +2,7 @@ package com.example.HMS.Service;
 
 import com.example.HMS.DTO.PatientRequestDTO;
 import com.example.HMS.DTO.PatientResponseDTO;
+import com.example.HMS.DTO.PatientUpdateRequestDTO;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Entity.Patient;
 import com.example.HMS.Entity.Room;
@@ -9,6 +10,7 @@ import com.example.HMS.Repository.DoctorRepository;
 import com.example.HMS.Repository.PatientRepository;
 import com.example.HMS.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +29,11 @@ public class PatientService {
 
     @Autowired
     private RoomRepository roomRepository;
+
     @Autowired private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthUserDetailsService authUserDetailsService;
 
     public PatientResponseDTO createPatient(PatientRequestDTO dto) {
         Patient patient = new Patient();
@@ -53,15 +59,23 @@ public class PatientService {
         return toResponseDTO(patient);
     }
 
-    public PatientResponseDTO updatePatient(int id, PatientRequestDTO dto) {
+
+    public PatientResponseDTO updatePatient(int id, PatientUpdateRequestDTO dto) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (role.equals("PATIENT") && id != loggedInUserId) {
+            throw new AccessDeniedException("You can only update your own profile");
+        }
+
         Patient patient = patientRepository.findById(id).orElseThrow();
+
         patient.setName(dto.getName());
-        patient.setEmail(dto.getEmail());
         patient.setAge(dto.getAge());
         patient.setGender(dto.getGender());
         patient.setMobileNo(dto.getMobileNo());
         patient.setCity(dto.getCity());
-        patient.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         return toResponseDTO(patientRepository.save(patient));
     }
 

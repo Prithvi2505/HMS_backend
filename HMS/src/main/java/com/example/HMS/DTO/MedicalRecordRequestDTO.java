@@ -1,9 +1,18 @@
 package com.example.HMS.DTO;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 public class MedicalRecordRequestDTO {
+    @NotBlank(message = "Diagnosis is required")
     private String diagnosis;
+
+    @Min(value = 1900, message = "Year must be valid")
     private int yearOfDiagnosis;
+
+    @NotBlank(message = "Medicine used is required")
     private String medicineUsed;
+
     private int patientId;
 
     public String getDiagnosis() {

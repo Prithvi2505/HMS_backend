@@ -2,6 +2,7 @@ package com.example.HMS.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.util.ArrayList;
 import java.util.List;
