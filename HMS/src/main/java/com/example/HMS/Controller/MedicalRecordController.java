@@ -43,5 +43,11 @@ public class MedicalRecordController {
     public void deleteMedicalRecord(@PathVariable int id) {
         medicalRecordService.deleteMedicalRecord(id);
     }
+
+    @GetMapping("/patient/{patientId}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    public List<MedicalRecordResponseDTO> getRecordsByPatient(@PathVariable int patientId) {
+        return medicalRecordService.getRecordsByPatientId(patientId);
+    }
 }
 

@@ -9,6 +9,8 @@ public class BillResponseDTO {
     private String billDetail;
     private int patientId;
 
+
+
     public int getId() {
         return id;
     }

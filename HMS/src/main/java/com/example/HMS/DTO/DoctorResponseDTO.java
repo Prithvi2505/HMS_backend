@@ -7,6 +7,8 @@ public class DoctorResponseDTO {
     private String specialization;
     private int yearOfExperience;
 
+
+
     public int getId() {
         return id;
     }

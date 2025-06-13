@@ -9,6 +9,8 @@ public class PatientResponseDTO {
     private long mobileNo;
     private String city;
 
+
+
     public int getId() {
         return id;
     }

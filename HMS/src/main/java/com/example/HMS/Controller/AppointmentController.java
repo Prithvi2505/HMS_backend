@@ -43,5 +43,17 @@ public class AppointmentController {
     public void deleteAppointment(@PathVariable int id) {
         appointmentService.deleteAppointment(id);
     }
+
+    @GetMapping("/patient/{patientId}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public List<AppointmentResponseDTO> getAppointmentsByPatient(@PathVariable int patientId) {
+        return appointmentService.getAppointmentsByPatientId(patientId);
+    }
+
+    @GetMapping("/doctor/{doctorId}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public List<AppointmentResponseDTO> getAppointmentsByDoctor(@PathVariable int doctorId) {
+        return appointmentService.getAppointmentsByDoctorId(doctorId);
+    }
 }
 

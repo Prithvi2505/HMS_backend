@@ -22,6 +22,14 @@ public class StaffRequestDTO {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    public StaffRequestDTO(String name, String email, String gender, String type, String password) {
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.type = type;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }

@@ -6,6 +6,8 @@ public class RoomResponseDTO {
     private int capacity;
     private int price;
 
+
+
     public int getId() {
         return id;
     }

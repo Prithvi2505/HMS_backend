@@ -12,6 +12,12 @@ public class StaffUpdateRequestDTO {
     @NotBlank(message = "Type is required")
     private String type;
 
+    public StaffUpdateRequestDTO(String name, String gender, String type) {
+        this.name = name;
+        this.gender = gender;
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }

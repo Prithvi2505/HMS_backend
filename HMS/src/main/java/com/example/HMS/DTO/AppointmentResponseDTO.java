@@ -11,6 +11,8 @@ public class AppointmentResponseDTO {
     private int doctorId;
     private int patientId;
 
+
+
     public int getId() {
         return id;
     }

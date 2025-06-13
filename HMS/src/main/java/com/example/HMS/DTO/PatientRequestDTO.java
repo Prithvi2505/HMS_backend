@@ -28,6 +28,16 @@ public class PatientRequestDTO {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
+    public PatientRequestDTO(String name, String email, int age, String gender, long mobileNo, String city, String password) {
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.gender = gender;
+        this.mobileNo = mobileNo;
+        this.city = city;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }

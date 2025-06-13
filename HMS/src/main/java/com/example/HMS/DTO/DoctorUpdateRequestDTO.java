@@ -14,6 +14,12 @@ public class DoctorUpdateRequestDTO {
     @Min(value = 0, message = "Year Of Experience must be positive")
     private int yearOfExperience;
 
+    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience) {
+        this.name = name;
+        this.specialization = specialization;
+        this.yearOfExperience = yearOfExperience;
+    }
+
     public String getName() {
         return name;
     }

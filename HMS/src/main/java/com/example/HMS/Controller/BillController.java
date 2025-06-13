@@ -43,5 +43,11 @@ public class BillController {
     public void deleteBill(@PathVariable int id) {
         billService.deleteBill(id);
     }
+
+    @GetMapping("/patient/{patientId}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    public List<BillResponseDTO> getBillsByPatient(@PathVariable int patientId) {
+        return billService.getBillsByPatientId(patientId);
+    }
 }
 

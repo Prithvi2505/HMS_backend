@@ -55,5 +55,17 @@ public class AppointmentService {
         dto.setPatientId(appt.getPatient().getId());
         return dto;
     }
+
+    public List<AppointmentResponseDTO> getAppointmentsByPatientId(int patientId) {
+        return appointmentRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
+    public List<AppointmentResponseDTO> getAppointmentsByDoctorId(int doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
 }
+
 

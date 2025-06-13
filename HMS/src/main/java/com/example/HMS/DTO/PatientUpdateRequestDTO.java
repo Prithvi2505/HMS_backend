@@ -23,6 +23,14 @@ public class PatientUpdateRequestDTO {
     @NotBlank(message = "City is required")
     private String city;
 
+    public PatientUpdateRequestDTO(String name, int age, String gender, long mobileNo, String city) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.mobileNo = mobileNo;
+        this.city = city;
+    }
+
     public String getName() {
         return name;
     }

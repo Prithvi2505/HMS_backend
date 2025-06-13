@@ -13,6 +13,12 @@ public class RoomRequestDTO {
     @Min(value = 0, message = "Price must be positive")
     private int price;
 
+    public RoomRequestDTO(String type, int capacity, int price) {
+        this.type = type;
+        this.capacity = capacity;
+        this.price = price;
+    }
+
     public String getType() {
         return type;
     }

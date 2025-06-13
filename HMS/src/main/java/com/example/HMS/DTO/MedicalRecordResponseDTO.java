@@ -7,6 +7,8 @@ public class MedicalRecordResponseDTO {
     private String medicineUsed;
     private int patientId;
 
+
+
     public int getId() {
         return id;
     }

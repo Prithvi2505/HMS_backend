@@ -16,6 +16,13 @@ public class BillRequestDTO {
     @NotBlank(message = "Bill detail is required")
     private String billDetail;
 
+    public BillRequestDTO(int amount, Date date, String billDetail, int patientId) {
+        this.amount = amount;
+        this.date = date;
+        this.billDetail = billDetail;
+        this.patientId = patientId;
+    }
+
     private int patientId;
 
     public int getAmount() {

@@ -51,5 +51,9 @@ public class BillService {
         dto.setPatientId(bill.getPatient().getId());
         return dto;
     }
+    public List<BillResponseDTO> getBillsByPatientId(int patientId) {
+        return billRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
 }
 

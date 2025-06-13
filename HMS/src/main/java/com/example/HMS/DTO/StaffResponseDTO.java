@@ -7,6 +7,8 @@ public class StaffResponseDTO {
     private String gender;
     private String type;
 
+
+
     public int getId() {
         return id;
     }

@@ -51,5 +51,9 @@ public class MedicalRecordService {
         dto.setPatientId(record.getPatient().getId());
         return dto;
     }
+    public List<MedicalRecordResponseDTO> getRecordsByPatientId(int patientId) {
+        return recordRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
 }
 

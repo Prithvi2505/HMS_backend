@@ -13,6 +13,13 @@ public class MedicalRecordRequestDTO {
     @NotBlank(message = "Medicine used is required")
     private String medicineUsed;
 
+    public MedicalRecordRequestDTO(String diagnosis, int yearOfDiagnosis, String medicineUsed, int patientId) {
+        this.diagnosis = diagnosis;
+        this.yearOfDiagnosis = yearOfDiagnosis;
+        this.medicineUsed = medicineUsed;
+        this.patientId = patientId;
+    }
+
     private int patientId;
 
     public String getDiagnosis() {

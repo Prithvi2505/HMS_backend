@@ -15,6 +15,13 @@ public class AppointmentRequestDTO {
     private int doctorId;
     private int patientId;
 
+    public AppointmentRequestDTO(Date date, Time time, int doctorId, int patientId) {
+        this.date = date;
+        this.time = time;
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+    }
+
     public Date getDate() {
         return date;
     }
