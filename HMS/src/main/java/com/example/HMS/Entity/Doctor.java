@@ -19,6 +19,9 @@ public class Doctor {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "gender")
+    private String gender;
+
     @Column(name = "specialization")
     private String specialization;
 
@@ -36,12 +39,13 @@ public class Doctor {
 
     public Doctor() {}
 
-    public Doctor(String name, String email, String specialization, int yearOfExperience, String password) {
+    public Doctor(String name, String email, String gender, String password, String specialization, int yearOfExperience) {
         this.name = name;
         this.email = email;
+        this.gender = gender;
+        this.password = password;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
-        this.password = password;
     }
 
     public int getId() {
@@ -106,5 +110,13 @@ public class Doctor {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

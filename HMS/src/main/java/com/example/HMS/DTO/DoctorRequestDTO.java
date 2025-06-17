@@ -1,6 +1,5 @@
 package com.example.HMS.DTO;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -24,12 +23,24 @@ public class DoctorRequestDTO {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 
-    public DoctorRequestDTO(int yearOfExperience, String name, String email, String specialization, String password) {
-        this.yearOfExperience = yearOfExperience;
+    @NotBlank(message = "Gender is required")
+    private String gender;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public DoctorRequestDTO(String name, String email, String specialization, int yearOfExperience, String password, String gender) {
         this.name = name;
         this.email = email;
         this.specialization = specialization;
+        this.yearOfExperience = yearOfExperience;
         this.password = password;
+        this.gender = gender;
     }
 
     public String getName() {

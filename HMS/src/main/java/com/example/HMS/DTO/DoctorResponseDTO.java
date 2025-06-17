@@ -1,9 +1,12 @@
 package com.example.HMS.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class DoctorResponseDTO {
     private int id;
     private String name;
     private String email;
+    private String gender;
     private String specialization;
     private int yearOfExperience;
 
@@ -48,4 +51,13 @@ public class DoctorResponseDTO {
     public void setYearOfExperience(int yearOfExperience) {
         this.yearOfExperience = yearOfExperience;
     }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
 }

@@ -25,6 +25,7 @@ public class DoctorService {
         Doctor doctor = new Doctor();
         doctor.setName(dto.getName());
         doctor.setEmail(dto.getEmail());
+        doctor.setGender(dto.getGender());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
         // Encrypt password
@@ -51,6 +52,7 @@ public class DoctorService {
 
         Doctor doctor = doctorRepository.findById(id).orElseThrow();
         doctor.setName(dto.getName());
+        doctor.setGender(dto.getGender());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
         return toResponseDTO(doctorRepository.save(doctor));
@@ -65,6 +67,7 @@ public class DoctorService {
         dto.setId(doctor.getId());
         dto.setName(doctor.getName());
         dto.setEmail(doctor.getEmail());
+        dto.setGender(doctor.getGender());
         dto.setSpecialization(doctor.getSpecialization());
         dto.setYearOfExperience(doctor.getYearOfExperience());
         return dto;

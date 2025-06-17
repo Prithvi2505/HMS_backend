@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/patients")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class PatientController {
     @Autowired
     private PatientService patientService;

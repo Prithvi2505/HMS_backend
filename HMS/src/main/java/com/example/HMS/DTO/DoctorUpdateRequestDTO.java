@@ -14,10 +14,14 @@ public class DoctorUpdateRequestDTO {
     @Min(value = 0, message = "Year Of Experience must be positive")
     private int yearOfExperience;
 
-    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience) {
+    @NotBlank(message = "Gender is required")
+    private String gender;
+
+    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience, String gender) {
         this.name = name;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -42,5 +46,13 @@ public class DoctorUpdateRequestDTO {
 
     public void setYearOfExperience(int yearOfExperience) {
         this.yearOfExperience = yearOfExperience;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
