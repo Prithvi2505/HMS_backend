@@ -9,6 +9,7 @@ import com.example.HMS.Entity.Room;
 import com.example.HMS.Repository.DoctorRepository;
 import com.example.HMS.Repository.PatientRepository;
 import com.example.HMS.Repository.RoomRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -80,6 +81,21 @@ public class PatientService {
     }
 
     public void deletePatient(int id) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (role.equals("PATIENT") && id != loggedInUserId) {
+            throw new AccessDeniedException("You can only delete your own profile");
+        }
+
+        if (role.equals("STAFF")) {
+            throw new AccessDeniedException("Staff is not allowed to delete patient records");
+        }
+
+        if (!patientRepository.existsById(id)) {
+            throw new EntityNotFoundException("Patient with id " + id + " not found");
+        }
+
         patientRepository.deleteById(id);
     }
 

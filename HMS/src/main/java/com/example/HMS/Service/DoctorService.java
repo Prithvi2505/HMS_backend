@@ -5,6 +5,7 @@ import com.example.HMS.DTO.DoctorResponseDTO;
 import com.example.HMS.DTO.DoctorUpdateRequestDTO;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Repository.DoctorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -59,6 +60,17 @@ public class DoctorService {
     }
 
     public void deleteDoctor(int id) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (!role.equals("DOCTOR") || id != loggedInUserId) {
+            throw new AccessDeniedException("You can only delete your own doctor profile");
+        }
+
+        if (!doctorRepository.existsById(id)) {
+            throw new EntityNotFoundException("Doctor with id " + id + " not found");
+        }
+
         doctorRepository.deleteById(id);
     }
 
