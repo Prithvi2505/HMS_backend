@@ -11,12 +11,12 @@ public class BillRequestDTO {
     private int amount;
 
     @NotNull(message = "Date is required")
-    private Date date;
+    private String date;
 
     @NotBlank(message = "Bill detail is required")
     private String billDetail;
 
-    public BillRequestDTO(int amount, Date date, String billDetail, int patientId) {
+    public BillRequestDTO(int amount, String date, String billDetail, int patientId) {
         this.amount = amount;
         this.date = date;
         this.billDetail = billDetail;
@@ -33,11 +33,11 @@ public class BillRequestDTO {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

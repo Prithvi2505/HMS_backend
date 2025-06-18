@@ -9,8 +9,9 @@ import com.example.HMS.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,13 +22,28 @@ public class BillService {
     @Autowired
     private PatientRepository patientRepository;
 
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+
     public BillResponseDTO createBill(BillRequestDTO dto) {
-        Bill bill = new Bill();
-        bill.setAmount(dto.getAmount());
-        bill.setDate(dto.getDate());
-        bill.setBillDetail(dto.getBillDetail());
-        bill.setPatient(patientRepository.findById(dto.getPatientId()).orElseThrow());
-        return toResponseDTO(billRepository.save(bill));
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateParser.parse(dto.getDate());
+
+            Patient patient = patientRepository.findById(dto.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+            Bill bill = new Bill();
+            bill.setAmount(dto.getAmount());
+            bill.setDate(parsedDate);
+            bill.setBillDetail(dto.getBillDetail());
+            bill.setPatient(patient);
+
+            Bill saved = billRepository.save(bill);
+            return toResponseDTO(saved);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating bill: " + e.getMessage(), e);
+        }
     }
 
     public List<BillResponseDTO> getAllBills() {

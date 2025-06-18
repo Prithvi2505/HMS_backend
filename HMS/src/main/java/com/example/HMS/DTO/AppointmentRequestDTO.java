@@ -7,34 +7,34 @@ import java.util.Date;
 
 public class AppointmentRequestDTO {
     @NotNull(message = "Date is required")
-    private Date date;
+    private String date;
 
     @NotNull(message = "Time is required")
-    private Time time;
+    private String time;
 
     private int doctorId;
     private int patientId;
 
-    public AppointmentRequestDTO(Date date, Time time, int doctorId, int patientId) {
+    public AppointmentRequestDTO(String date, String time, int doctorId, int patientId) {
         this.date = date;
         this.time = time;
         this.doctorId = doctorId;
         this.patientId = patientId;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

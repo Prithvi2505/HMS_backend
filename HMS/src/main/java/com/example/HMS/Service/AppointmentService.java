@@ -11,6 +11,9 @@ import com.example.HMS.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,12 +29,24 @@ public class AppointmentService {
     private PatientRepository patientRepository;
 
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
-        Appointment appt = new Appointment();
-        appt.setDate(dto.getDate());
-        appt.setTime(dto.getTime());
-        appt.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow());
-        appt.setPatient(patientRepository.findById(dto.getPatientId()).orElseThrow());
-        return toResponseDTO(appointmentRepository.save(appt));
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateFormat.parse(dto.getDate());
+            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+            Patient patient = patientRepository.findById(dto.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found"));
+            Doctor doctor = doctorRepository.findById(dto.getDoctorId())
+                    .orElseThrow(() -> new RuntimeException("Doctor not found"));
+            Appointment appointment = new Appointment();
+            appointment.setDate(parsedDate);
+            appointment.setTime(parsedTime);
+            appointment.setPatient(patient);
+            appointment.setDoctor(doctor);
+            Appointment saved = appointmentRepository.save(appointment);
+            return new AppointmentResponseDTO(saved.getId(), saved.getDate(), saved.getTime(), doctor.getId(), patient.getId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating appointment: " + e.getMessage(), e);
+        }
     }
 
     public List<AppointmentResponseDTO> getAllAppointments() {

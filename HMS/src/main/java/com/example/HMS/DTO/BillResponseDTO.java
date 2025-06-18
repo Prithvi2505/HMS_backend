@@ -9,7 +9,16 @@ public class BillResponseDTO {
     private String billDetail;
     private int patientId;
 
+    public BillResponseDTO() {
+    }
 
+    public BillResponseDTO(int id, int amount, Date date, String billDetail, int patientId) {
+        this.id = id;
+        this.amount = amount;
+        this.date = date;
+        this.billDetail = billDetail;
+        this.patientId = patientId;
+    }
 
     public int getId() {
         return id;

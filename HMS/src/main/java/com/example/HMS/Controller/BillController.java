@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/bills")
+@CrossOrigin
 public class BillController {
 
     @Autowired
