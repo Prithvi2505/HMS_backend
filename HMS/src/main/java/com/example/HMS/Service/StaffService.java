@@ -76,19 +76,15 @@ public class StaffService {
     public void deleteStaff(int id) {
         int loggedInUserId = authUserDetailsService.getLoggedInUserId();
         String role = authUserDetailsService.getLoggedInUserRole();
-
         if (role.equals("STAFF") && id != loggedInUserId) {
             throw new AccessDeniedException("You can only delete your own staff profile");
         }
-
         if (!role.equals("STAFF") && !role.equals("DOCTOR")) {
             throw new AccessDeniedException("Only staff or doctors can delete staff profiles");
         }
-
         if (!staffRepository.existsById(id)) {
             throw new EntityNotFoundException("Staff with id " + id + " not found");
         }
-
         staffRepository.deleteById(id);
     }
 

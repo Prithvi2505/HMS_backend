@@ -2,8 +2,11 @@ package com.example.HMS.Service;
 
 import com.example.HMS.DTO.RoomRequestDTO;
 import com.example.HMS.DTO.RoomResponseDTO;
+import com.example.HMS.DTO.RoomWithStaffDTO;
 import com.example.HMS.Entity.Room;
+import com.example.HMS.Entity.Staff;
 import com.example.HMS.Repository.RoomRepository;
+import com.example.HMS.Repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ public class RoomService {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
 
     public RoomResponseDTO createRoom(RoomRequestDTO dto) {
         Room room = new Room();
@@ -44,6 +50,21 @@ public class RoomService {
 
     public void deleteRoom(int id) {
         roomRepository.deleteById(id);
+    }
+
+    public List<RoomWithStaffDTO> getRoomsAssignedToStaff(int staffId) {
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        return staff.getRooms().stream()
+                .map(room -> new RoomWithStaffDTO(
+                        room.getId(),
+                        room.getType(),
+                        room.getCapacity(),
+                        room.getPrice(),
+                        staffId
+                ))
+                .collect(Collectors.toList());
     }
 
     private RoomResponseDTO toResponseDTO(Room room) {

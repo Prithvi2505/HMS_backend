@@ -2,6 +2,7 @@ package com.example.HMS.Controller;
 
 import com.example.HMS.DTO.RoomRequestDTO;
 import com.example.HMS.DTO.RoomResponseDTO;
+import com.example.HMS.DTO.RoomWithStaffDTO;
 import com.example.HMS.Entity.Room;
 import com.example.HMS.Service.RoomService;
 import jakarta.validation.Valid;
@@ -44,7 +45,11 @@ public class RoomController {
     public RoomResponseDTO updateRoom(@Valid @PathVariable int id, @RequestBody RoomRequestDTO dto) {
         return roomService.updateRoom(id, dto);
     }
-
+    @GetMapping("/by-staff/{staffId}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public List<RoomWithStaffDTO> getRoomsByStaff(@PathVariable int staffId) {
+        return roomService.getRoomsAssignedToStaff(staffId);
+    }
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteRoom(@PathVariable int id) {
