@@ -48,8 +48,14 @@ public class RoomService {
         return toResponseDTO(roomRepository.save(room));
     }
 
-    public void deleteRoom(int id) {
-        roomRepository.deleteById(id);
+    public void deleteRoom(int roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        room.getStaff().forEach(staff -> staff.getRooms().remove(room));
+        room.getStaff().clear();
+        roomRepository.save(room);
+        roomRepository.deleteById(roomId);
     }
 
     public List<RoomWithStaffDTO> getRoomsAssignedToStaff(int staffId) {

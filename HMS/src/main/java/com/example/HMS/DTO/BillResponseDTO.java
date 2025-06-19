@@ -5,6 +5,7 @@ import java.util.Date;
 public class BillResponseDTO {
     private int id;
     private int amount;
+    private String status;
     private Date date;
     private String billDetail;
     private int patientId;
@@ -12,12 +13,13 @@ public class BillResponseDTO {
     public BillResponseDTO() {
     }
 
-    public BillResponseDTO(int id, int amount, Date date, String billDetail, int patientId) {
+    public BillResponseDTO(int id, int amount, Date date, String billDetail, int patientId, String status) {
         this.id = id;
         this.amount = amount;
         this.date = date;
         this.billDetail = billDetail;
         this.patientId = patientId;
+        this.status = status;
     }
 
     public int getId() {
@@ -58,5 +60,13 @@ public class BillResponseDTO {
 
     public void setPatientId(int patientId) {
         this.patientId = patientId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

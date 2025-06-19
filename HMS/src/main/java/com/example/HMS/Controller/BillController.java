@@ -28,13 +28,13 @@ public class BillController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public List<BillResponseDTO> getAllBills() {
         return billService.getAllBills();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public BillResponseDTO getBillById(@PathVariable int id) {
         return billService.getBillById(id);
     }
@@ -46,9 +46,15 @@ public class BillController {
     }
 
     @GetMapping("/patient/{patientId}")
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public List<BillResponseDTO> getBillsByPatient(@PathVariable int patientId) {
         return billService.getBillsByPatientId(patientId);
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public BillResponseDTO updateBill(@PathVariable int id, @RequestBody BillRequestDTO dto) {
+        return billService.updateBill(id, dto);
+    }
+
 }
 

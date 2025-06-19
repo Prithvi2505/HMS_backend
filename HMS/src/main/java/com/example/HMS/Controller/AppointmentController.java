@@ -56,5 +56,10 @@ public class AppointmentController {
     public List<AppointmentResponseDTO> getAppointmentsByDoctor(@PathVariable int doctorId) {
         return appointmentService.getAppointmentsByDoctorId(doctorId);
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    public AppointmentResponseDTO updateAppointment(@PathVariable int id, @RequestBody AppointmentRequestDTO dto) {
+        return appointmentService.updateAppointment(id, dto);
+    }
 }
 

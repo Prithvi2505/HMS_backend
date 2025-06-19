@@ -28,13 +28,13 @@ public class MedicalRecordController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public List<MedicalRecordResponseDTO> getAllMedicalRecords() {
         return medicalRecordService.getAllMedicalRecords();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public MedicalRecordResponseDTO getMedicalRecordById(@PathVariable int id) {
         return medicalRecordService.getMedicalRecordById(id);
     }
@@ -46,9 +46,15 @@ public class MedicalRecordController {
     }
 
     @GetMapping("/patient/{patientId}")
-    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT','STAFF')")
     public List<MedicalRecordResponseDTO> getRecordsByPatient(@PathVariable int patientId) {
         return medicalRecordService.getRecordsByPatientId(patientId);
     }
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    public MedicalRecordResponseDTO updateMedicalRecord(@PathVariable int id, @RequestBody MedicalRecordRequestDTO dto) {
+        return medicalRecordService.updateMedicalRecord(id, dto);
+    }
+
 }
 

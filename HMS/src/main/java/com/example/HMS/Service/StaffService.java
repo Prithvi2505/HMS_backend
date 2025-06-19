@@ -87,6 +87,18 @@ public class StaffService {
         }
         staffRepository.deleteById(id);
     }
+    public StaffResponseDTO unassignRoom(int staffId, int roomId) {
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new EntityNotFoundException("Staff not found"));
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
+        if (!staff.getRooms().contains(room)) {
+            throw new IllegalStateException("Staff is not assigned to this room");
+        }
+        staff.getRooms().remove(room);
+        room.getStaff().remove(staff); // Optional: maintain bidirectional sync
+        return toResponseDTO(staffRepository.save(staff));
+    }
 
     private StaffResponseDTO toResponseDTO(Staff staff) {
         StaffResponseDTO dto = new StaffResponseDTO();

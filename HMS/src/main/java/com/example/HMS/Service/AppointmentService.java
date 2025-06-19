@@ -9,6 +9,7 @@ import com.example.HMS.Repository.AppointmentRepository;
 import com.example.HMS.Repository.DoctorRepository;
 import com.example.HMS.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -27,6 +28,9 @@ public class AppointmentService {
     private DoctorRepository doctorRepository;
     @Autowired
     private PatientRepository patientRepository;
+
+    @Autowired
+    private AuthUserDetailsService authUserDetailsService;
 
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
         try {
@@ -61,6 +65,49 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
+    public List<AppointmentResponseDTO> getAppointmentsByPatientId(int patientId) {
+        return appointmentRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
+    public List<AppointmentResponseDTO> getAppointmentsByDoctorId(int doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+    public AppointmentResponseDTO updateAppointment(int id, AppointmentRequestDTO dto) {
+        int loggedInUserId = authUserDetailsService.getLoggedInUserId();
+        String role = authUserDetailsService.getLoggedInUserRole();
+
+        if (role.equals("PATIENT") && id != loggedInUserId) {
+            throw new AccessDeniedException("You can only update your own profile");
+        }
+        try {
+            Appointment existingAppointment = appointmentRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateFormat.parse(dto.getDate());
+            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+
+            Patient patient = patientRepository.findById(dto.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + dto.getPatientId()));
+
+            Doctor doctor = doctorRepository.findById(dto.getDoctorId())
+                    .orElseThrow(() -> new RuntimeException("Doctor not found with ID: " + dto.getDoctorId()));
+
+            existingAppointment.setDate(parsedDate);
+            existingAppointment.setTime(parsedTime);
+            existingAppointment.setPatient(patient);
+            existingAppointment.setDoctor(doctor);
+
+            Appointment updated = appointmentRepository.save(existingAppointment);
+
+            return new AppointmentResponseDTO(updated.getId(), updated.getDate(), updated.getTime(), doctor.getId(), patient.getId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating appointment: " + e.getMessage(), e);
+        }
+    }
+
     private AppointmentResponseDTO toResponseDTO(Appointment appt) {
         AppointmentResponseDTO dto = new AppointmentResponseDTO();
         dto.setId(appt.getId());
@@ -71,15 +118,8 @@ public class AppointmentService {
         return dto;
     }
 
-    public List<AppointmentResponseDTO> getAppointmentsByPatientId(int patientId) {
-        return appointmentRepository.findByPatientId(patientId)
-                .stream().map(this::toResponseDTO).collect(Collectors.toList());
-    }
 
-    public List<AppointmentResponseDTO> getAppointmentsByDoctorId(int doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId)
-                .stream().map(this::toResponseDTO).collect(Collectors.toList());
-    }
+
 
 }
 

@@ -12,7 +12,10 @@ public class AppointmentRequestDTO {
     @NotNull(message = "Time is required")
     private String time;
 
+
+    @NotNull(message = "DoctorId is required ")
     private int doctorId;
+    @NotNull(message = "DoctorId is required ")
     private int patientId;
 
     public AppointmentRequestDTO(String date, String time, int doctorId, int patientId) {

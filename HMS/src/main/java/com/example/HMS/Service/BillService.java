@@ -36,6 +36,7 @@ public class BillService {
             bill.setAmount(dto.getAmount());
             bill.setDate(parsedDate);
             bill.setBillDetail(dto.getBillDetail());
+            bill.setStatus(dto.getStatus());
             bill.setPatient(patient);
 
             Bill saved = billRepository.save(bill);
@@ -58,18 +59,41 @@ public class BillService {
         billRepository.deleteById(id);
     }
 
+    public BillResponseDTO updateBill(int id, BillRequestDTO dto) {
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateParser.parse(dto.getDate());
+            Bill existingBill = billRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Bill not found with ID: " + id));
+            Patient patient = patientRepository.findById(dto.getPatientId())
+                    .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + dto.getPatientId()));
+            existingBill.setAmount(dto.getAmount());
+            existingBill.setDate(parsedDate);
+            existingBill.setBillDetail(dto.getBillDetail());
+            existingBill.setStatus(dto.getStatus());
+            existingBill.setPatient(patient);
+            Bill updated = billRepository.save(existingBill);
+            return toResponseDTO(updated);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating bill: " + e.getMessage(), e);
+        }
+    }
+
+
+    public List<BillResponseDTO> getBillsByPatientId(int patientId) {
+        return billRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
     private BillResponseDTO toResponseDTO(Bill bill) {
         BillResponseDTO dto = new BillResponseDTO();
         dto.setId(bill.getId());
         dto.setAmount(bill.getAmount());
         dto.setDate(bill.getDate());
         dto.setBillDetail(bill.getBillDetail());
+        dto.setStatus(bill.getStatus());
         dto.setPatientId(bill.getPatient().getId());
         return dto;
-    }
-    public List<BillResponseDTO> getBillsByPatientId(int patientId) {
-        return billRepository.findByPatientId(patientId)
-                .stream().map(this::toResponseDTO).collect(Collectors.toList());
     }
 }
 

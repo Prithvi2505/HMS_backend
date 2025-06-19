@@ -42,6 +42,25 @@ public class MedicalRecordService {
         recordRepository.deleteById(id);
     }
 
+    public List<MedicalRecordResponseDTO> getRecordsByPatientId(int patientId) {
+        return recordRepository.findByPatientId(patientId)
+                .stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
+    public MedicalRecordResponseDTO updateMedicalRecord(int id, MedicalRecordRequestDTO dto) {
+        MedicalRecord existingRecord = recordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Medical record not found with ID: " + id));
+        Patient patient = patientRepository.findById(dto.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + dto.getPatientId()));
+        existingRecord.setDiagnosis(dto.getDiagnosis());
+        existingRecord.setYearOfDiagnosis(dto.getYearOfDiagnosis());
+        existingRecord.setMedicineUsed(dto.getMedicineUsed());
+        existingRecord.setPatient(patient);
+        MedicalRecord updated = recordRepository.save(existingRecord);
+        return toResponseDTO(updated);
+    }
+
+
     private MedicalRecordResponseDTO toResponseDTO(MedicalRecord record) {
         MedicalRecordResponseDTO dto = new MedicalRecordResponseDTO();
         dto.setId(record.getId());
@@ -51,9 +70,6 @@ public class MedicalRecordService {
         dto.setPatientId(record.getPatient().getId());
         return dto;
     }
-    public List<MedicalRecordResponseDTO> getRecordsByPatientId(int patientId) {
-        return recordRepository.findByPatientId(patientId)
-                .stream().map(this::toResponseDTO).collect(Collectors.toList());
-    }
+
 }
 

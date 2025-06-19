@@ -54,6 +54,12 @@ public class StaffController {
         staffService.deleteStaff(id);
     }
 
+    @PutMapping("/unassign-room/{staffId}/{roomId}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+    public StaffResponseDTO unassignRoom(@PathVariable int staffId, @PathVariable int roomId) {
+        return staffService.unassignRoom(staffId, roomId);
+    }
+
 
 }
 

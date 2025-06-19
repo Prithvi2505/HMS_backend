@@ -16,11 +16,15 @@ public class BillRequestDTO {
     @NotBlank(message = "Bill detail is required")
     private String billDetail;
 
-    public BillRequestDTO(int amount, String date, String billDetail, int patientId) {
+    @NotBlank(message = "Status should not be blank")
+    private String status;
+
+    public BillRequestDTO(int amount, String date, String billDetail, int patientId, String status) {
         this.amount = amount;
         this.date = date;
         this.billDetail = billDetail;
         this.patientId = patientId;
+        this.status = status;
     }
 
     private int patientId;
@@ -55,5 +59,13 @@ public class BillRequestDTO {
 
     public void setPatientId(int patientId) {
         this.patientId = patientId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

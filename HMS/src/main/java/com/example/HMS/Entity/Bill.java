@@ -24,6 +24,9 @@ public class Bill {
     @Column(name = "bill_detail")
     private String billDetail;
 
+    @Column(name = "status")
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "patientId",nullable = false)
     @JsonIgnore
@@ -69,4 +72,11 @@ public class Bill {
         this.patient = patient;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
