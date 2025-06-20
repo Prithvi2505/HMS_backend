@@ -9,8 +9,10 @@ import com.example.HMS.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +28,19 @@ public class BillService {
 
     public BillResponseDTO createBill(BillRequestDTO dto) {
         try {
-            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateParser.parse(dto.getDate());
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            java.util.Date utilDate = formatter.parse(dto.getDate());
+//            Date sqlDate = new Date(utilDate.getTime());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
+            Date sqlDate = Date.valueOf(localDate);
 
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found"));
 
             Bill bill = new Bill();
             bill.setAmount(dto.getAmount());
-            bill.setDate(parsedDate);
+            bill.setDate(localDate);
             bill.setBillDetail(dto.getBillDetail());
             bill.setStatus(dto.getStatus());
             bill.setPatient(patient);
@@ -61,14 +67,18 @@ public class BillService {
 
     public BillResponseDTO updateBill(int id, BillRequestDTO dto) {
         try {
-            SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateParser.parse(dto.getDate());
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            java.util.Date utilDate = formatter.parse(dto.getDate());
+//            Date sqlDate = new Date(utilDate.getTime());
+//            LocalDate localDate = LocalDate.parse(dto.getDate());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
             Bill existingBill = billRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Bill not found with ID: " + id));
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + dto.getPatientId()));
             existingBill.setAmount(dto.getAmount());
-            existingBill.setDate(parsedDate);
+            existingBill.setDate(localDate);
             existingBill.setBillDetail(dto.getBillDetail());
             existingBill.setStatus(dto.getStatus());
             existingBill.setPatient(patient);

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-import java.sql.Time;
-import java.util.Date;
 
 @Entity
 public class Appointment {
@@ -15,10 +15,10 @@ public class Appointment {
     private int id;
 
     @Column(name="date")
-    private Date date;
+    private LocalDate date;
 
     @Column(name = "time")
-    private Time time;
+    private LocalTime time;
 
     @ManyToOne
     @JoinColumn(name = "patientId",nullable = false)
@@ -30,19 +30,19 @@ public class Appointment {
     @JsonIgnore
     private Doctor doctor;
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Time getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 

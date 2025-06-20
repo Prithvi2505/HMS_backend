@@ -1,25 +1,26 @@
 package com.example.HMS.DTO;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class BillResponseDTO {
     private int id;
     private int amount;
     private String status;
-    private Date date;
+    private LocalDate date;
     private String billDetail;
     private int patientId;
 
     public BillResponseDTO() {
     }
 
-    public BillResponseDTO(int id, int amount, Date date, String billDetail, int patientId, String status) {
+    public BillResponseDTO(int id, int amount, String status, LocalDate date, String billDetail, int patientId) {
         this.id = id;
         this.amount = amount;
+        this.status = status;
         this.date = date;
         this.billDetail = billDetail;
         this.patientId = patientId;
-        this.status = status;
     }
 
     public int getId() {
@@ -38,11 +39,11 @@ public class BillResponseDTO {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

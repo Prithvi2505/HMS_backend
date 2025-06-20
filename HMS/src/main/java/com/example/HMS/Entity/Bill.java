@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Entity
 public class Bill {
@@ -19,7 +20,7 @@ public class Bill {
     private int amount;
 
     @Column(name = "date")
-    private Date date;
+    private LocalDate date;
 
     @Column(name = "bill_detail")
     private String billDetail;
@@ -48,11 +49,11 @@ public class Bill {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

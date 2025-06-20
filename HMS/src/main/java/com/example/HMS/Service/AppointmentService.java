@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,16 +37,22 @@ public class AppointmentService {
 
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(dto.getDate());
-            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            java.util.Date utilDate = formatter.parse(dto.getDate());
+//            Date sqlDate = new Date(utilDate.getTime());
+//            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+//            LocalDate localDate = LocalDate.parse(dto.getDate());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
+//            Date sqlDate = Date.valueOf(localDate);
+            LocalTime localTime = LocalTime.parse(dto.getTime());
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found"));
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found"));
             Appointment appointment = new Appointment();
-            appointment.setDate(parsedDate);
-            appointment.setTime(parsedTime);
+            appointment.setDate(localDate);
+            appointment.setTime(localTime);
             appointment.setPatient(patient);
             appointment.setDoctor(doctor);
             Appointment saved = appointmentRepository.save(appointment);
@@ -78,16 +87,26 @@ public class AppointmentService {
         int loggedInUserId = authUserDetailsService.getLoggedInUserId();
         String role = authUserDetailsService.getLoggedInUserRole();
 
-        if (role.equals("PATIENT") && id != loggedInUserId) {
-            throw new AccessDeniedException("You can only update your own profile");
+        Appointment existingAppointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
+
+        if (role.equals("PATIENT") && existingAppointment.getPatient().getId() != loggedInUserId) {
+            throw new AccessDeniedException("You can only update your own appointment");
+        }
+
+        if (role.equals("DOCTOR") && existingAppointment.getDoctor().getId() != loggedInUserId) {
+            throw new AccessDeniedException("You can only update appointments assigned to you");
         }
         try {
-            Appointment existingAppointment = appointmentRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + id));
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(dto.getDate());
-            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//            java.util.Date utilDate = formatter.parse(dto.getDate());
+//            Date sqlDate = new Date(utilDate.getTime());
+//            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
+//            LocalDate localDate = LocalDate.parse(dto.getDate());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
+//            Date sqlDate = Date.valueOf(localDate);
+            LocalTime localTime = LocalTime.parse(dto.getTime());
 
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found with ID: " + dto.getPatientId()));
@@ -95,8 +114,8 @@ public class AppointmentService {
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found with ID: " + dto.getDoctorId()));
 
-            existingAppointment.setDate(parsedDate);
-            existingAppointment.setTime(parsedTime);
+            existingAppointment.setDate(localDate);
+            existingAppointment.setTime(localTime);
             existingAppointment.setPatient(patient);
             existingAppointment.setDoctor(doctor);
 
