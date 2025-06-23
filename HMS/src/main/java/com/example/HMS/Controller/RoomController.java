@@ -22,7 +22,7 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @PostMapping("/create")
+    @PostMapping()
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public RoomResponseDTO createRoom(@Valid @RequestBody RoomRequestDTO dto) {
         return roomService.createRoom(dto);
@@ -40,7 +40,7 @@ public class RoomController {
         return roomService.getRoomById(id);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public RoomResponseDTO updateRoom(@Valid @PathVariable int id, @RequestBody RoomRequestDTO dto) {
         return roomService.updateRoom(id, dto);
@@ -50,7 +50,7 @@ public class RoomController {
     public List<RoomWithStaffDTO> getRoomsByStaff(@PathVariable int staffId) {
         return roomService.getRoomsAssignedToStaff(staffId);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteRoom(@PathVariable int id) {
         roomService.deleteRoom(id);

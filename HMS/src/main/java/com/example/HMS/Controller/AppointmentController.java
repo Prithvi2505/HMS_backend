@@ -21,7 +21,7 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appointmentService;
 
-    @PostMapping("/create")
+    @PostMapping()
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public AppointmentResponseDTO createAppointment(@Valid @RequestBody AppointmentRequestDTO dto) {
         return appointmentService.createAppointment(dto);
@@ -39,7 +39,7 @@ public class AppointmentController {
         return appointmentService.getAppointmentById(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public void deleteAppointment(@PathVariable int id) {
         appointmentService.deleteAppointment(id);

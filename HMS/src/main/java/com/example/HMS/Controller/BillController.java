@@ -21,7 +21,7 @@ public class BillController {
     @Autowired
     private BillService billService;
 
-    @PostMapping("/create")
+    @PostMapping()
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public BillResponseDTO createBill(@Valid @RequestBody BillRequestDTO dto) {
         return billService.createBill(dto);
@@ -39,7 +39,7 @@ public class BillController {
         return billService.getBillById(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteBill(@PathVariable int id) {
         billService.deleteBill(id);

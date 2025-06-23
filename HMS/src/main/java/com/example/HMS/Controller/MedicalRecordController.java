@@ -21,7 +21,7 @@ public class MedicalRecordController {
     @Autowired
     private MedicalRecordService medicalRecordService;
 
-    @PostMapping("/create")
+    @PostMapping()
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public MedicalRecordResponseDTO createMedicalRecord(@Valid @RequestBody MedicalRecordRequestDTO dto) {
         return medicalRecordService.createMedicalRecord(dto);
@@ -39,7 +39,7 @@ public class MedicalRecordController {
         return medicalRecordService.getMedicalRecordById(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public void deleteMedicalRecord(@PathVariable int id) {
         medicalRecordService.deleteMedicalRecord(id);

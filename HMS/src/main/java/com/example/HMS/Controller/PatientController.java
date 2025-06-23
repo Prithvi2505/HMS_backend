@@ -21,7 +21,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @PostMapping("/create")
+    @PostMapping()
     public PatientResponseDTO createPatient(@Valid @RequestBody PatientRequestDTO dto) {
         return patientService.createPatient(dto);
     }
@@ -38,13 +38,13 @@ public class PatientController {
         return patientService.getPatientById(id);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public PatientResponseDTO updatePatient(@Valid @PathVariable int id, @RequestBody PatientUpdateRequestDTO dto) {
         return patientService.updatePatient(id, dto);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public void deletePatient(@PathVariable int id) {
         patientService.deletePatient(id);

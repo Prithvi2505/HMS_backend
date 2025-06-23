@@ -20,7 +20,7 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
-    @PostMapping("/create")
+    @PostMapping()
     public StaffResponseDTO createStaff(@Valid @RequestBody StaffRequestDTO dto) {
         return staffService.createStaff(dto);
     }
@@ -42,13 +42,13 @@ public class StaffController {
     public StaffResponseDTO assignRoomToStaff(@PathVariable int staffId, @PathVariable int roomId) {
         return staffService.assignRoom(staffId, roomId);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR')")
     public StaffResponseDTO updateDoctor(@Valid @PathVariable int id, @RequestBody StaffUpdateRequestDTO dto) {
         return staffService.updateStaff(id, dto);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public void deleteStaff(@PathVariable int id) {
         staffService.deleteStaff(id);
