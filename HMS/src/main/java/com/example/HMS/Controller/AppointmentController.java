@@ -6,10 +6,13 @@ import com.example.HMS.Entity.Appointment;
 import com.example.HMS.Service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +26,28 @@ public class AppointmentController {
 
     @PostMapping()
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
-    public AppointmentResponseDTO createAppointment(@Valid @RequestBody AppointmentRequestDTO dto) {
-        return appointmentService.createAppointment(dto);
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(appointmentService.createAppointment(dto));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
     }
+//    public AppointmentResponseDTO createAppointment(@Valid @RequestBody AppointmentRequestDTO dto) {
+//        return appointmentService.createAppointment(dto);
+//    }
+
+    @GetMapping("/count")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
+    public ResponseEntity<Integer> getCount(
+            @RequestParam int doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(appointmentService.countAppointments(doctorId, date));
+    }
+
+
 
     @GetMapping
     @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")

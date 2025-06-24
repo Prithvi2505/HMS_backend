@@ -37,29 +37,40 @@ public class AppointmentService {
 
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
         try {
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//            java.util.Date utilDate = formatter.parse(dto.getDate());
-//            Date sqlDate = new Date(utilDate.getTime());
-//            Time parsedTime = Time.valueOf(dto.getTime() + ":00");
-//            LocalDate localDate = LocalDate.parse(dto.getDate());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
-//            Date sqlDate = Date.valueOf(localDate);
             LocalTime localTime = LocalTime.parse(dto.getTime());
+
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found"));
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+            // 🔒 Limit check logic here
+            int count = appointmentRepository.countByDoctorIdAndDate(doctor.getId(), localDate);
+            if (count >= doctor.getMaxAppointmentsPerDay()) {
+                throw new IllegalStateException("Doctor has reached the appointment limit for this day.");
+            }
+
             Appointment appointment = new Appointment();
             appointment.setDate(localDate);
             appointment.setTime(localTime);
             appointment.setPatient(patient);
             appointment.setDoctor(doctor);
+
             Appointment saved = appointmentRepository.save(appointment);
-            return new AppointmentResponseDTO(saved.getId(), saved.getDate(), saved.getTime(), doctor.getId(), patient.getId());
+
+            return new AppointmentResponseDTO(saved.getId(), saved.getDate(), saved.getTime(),
+                    doctor.getId(), patient.getId());
+
         } catch (Exception e) {
             throw new RuntimeException("Error creating appointment: " + e.getMessage(), e);
         }
+    }
+
+
+    public int countAppointments(int doctorId, LocalDate date) {
+        return appointmentRepository.countByDoctorIdAndDate(doctorId, date);
     }
 
     public List<AppointmentResponseDTO> getAllAppointments() {

@@ -29,6 +29,7 @@ public class DoctorService {
         doctor.setGender(dto.getGender());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
+        doctor.setMaxAppointmentsPerDay(dto.getMaxAppointmentsPerDay());
         // Encrypt password
         doctor.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(doctorRepository.save(doctor));
@@ -56,6 +57,7 @@ public class DoctorService {
         doctor.setGender(dto.getGender());
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
+        doctor.setMaxAppointmentsPerDay(dto.getMaxAppointmentsPerDay());
         return toResponseDTO(doctorRepository.save(doctor));
     }
 
@@ -82,6 +84,7 @@ public class DoctorService {
         dto.setGender(doctor.getGender());
         dto.setSpecialization(doctor.getSpecialization());
         dto.setYearOfExperience(doctor.getYearOfExperience());
+        dto.setMaxAppointmentsPerDay(doctor.getMaxAppointmentsPerDay());
         return dto;
     }
 }

@@ -19,6 +19,9 @@ public class DoctorRequestDTO {
     @Min(value = 0, message = "Year Of Experience must be positive")
     private int yearOfExperience;
 
+    @Min(value = 0, message = "Appointments Per Day must be positive")
+    private int maxAppointmentsPerDay;
+
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
@@ -34,11 +37,12 @@ public class DoctorRequestDTO {
         this.gender = gender;
     }
 
-    public DoctorRequestDTO(String name, String email, String specialization, int yearOfExperience, String password, String gender) {
+    public DoctorRequestDTO(String name, String email, String specialization, int yearOfExperience, int maxAppointmentsPerDay, String password, String gender) {
         this.name = name;
         this.email = email;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
         this.password = password;
         this.gender = gender;
     }
@@ -81,5 +85,13 @@ public class DoctorRequestDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getMaxAppointmentsPerDay() {
+        return maxAppointmentsPerDay;
+    }
+
+    public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
     }
 }

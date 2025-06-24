@@ -17,11 +17,15 @@ public class DoctorUpdateRequestDTO {
     @NotBlank(message = "Gender is required")
     private String gender;
 
-    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience, String gender) {
+    @Min(value = 0, message = "Appointments Per Day must be positive")
+    private int maxAppointmentsPerDay;
+
+    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience, String gender, int maxAppointmentsPerDay) {
         this.name = name;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
         this.gender = gender;
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
     }
 
     public String getName() {
@@ -54,5 +58,13 @@ public class DoctorUpdateRequestDTO {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public int getMaxAppointmentsPerDay() {
+        return maxAppointmentsPerDay;
+    }
+
+    public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
     }
 }

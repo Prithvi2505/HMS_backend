@@ -9,6 +9,7 @@ public class DoctorResponseDTO {
     private String gender;
     private String specialization;
     private int yearOfExperience;
+    private int maxAppointmentsPerDay;
 
 
 
@@ -60,4 +61,11 @@ public class DoctorResponseDTO {
         this.gender = gender;
     }
 
+    public int getMaxAppointmentsPerDay() {
+        return maxAppointmentsPerDay;
+    }
+
+    public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+    }
 }

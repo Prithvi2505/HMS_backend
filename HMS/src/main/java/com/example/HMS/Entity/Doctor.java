@@ -31,6 +31,9 @@ public class Doctor {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "maxAppointmentsPerDay")
+    private int maxAppointmentsPerDay;
+
     @OneToMany(mappedBy = "doctor",cascade = CascadeType.ALL)
     private List<Patient> patients = new ArrayList<>();
 
@@ -39,13 +42,16 @@ public class Doctor {
 
     public Doctor() {}
 
-    public Doctor(String name, String email, String gender, String password, String specialization, int yearOfExperience) {
+    public Doctor(String name, String email, String gender, String specialization, int yearOfExperience, String password, int maxAppointmentsPerDay, List<Patient> patients, List<Appointment> appointments) {
         this.name = name;
         this.email = email;
         this.gender = gender;
-        this.password = password;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
+        this.password = password;
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+        this.patients = patients;
+        this.appointments = appointments;
     }
 
     public int getId() {
@@ -118,5 +124,13 @@ public class Doctor {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public int getMaxAppointmentsPerDay() {
+        return maxAppointmentsPerDay;
+    }
+
+    public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
+        this.maxAppointmentsPerDay = maxAppointmentsPerDay;
     }
 }
