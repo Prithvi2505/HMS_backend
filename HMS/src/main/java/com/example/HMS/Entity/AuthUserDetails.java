@@ -44,6 +44,8 @@ public class AuthUserDetails implements UserDetails {
         return role;
     }
 
+
+
     // These can be used for account expiration/locking logic
     @Override
     public boolean isAccountNonExpired() {

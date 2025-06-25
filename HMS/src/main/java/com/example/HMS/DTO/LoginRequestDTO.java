@@ -3,15 +3,14 @@ package com.example.HMS.DTO;
 public class LoginRequestDTO {
     private String email;
     private String password;
-    private String role;
 
     public LoginRequestDTO() {
     }
 
-    public LoginRequestDTO(String email, String password, String role) {
+    public LoginRequestDTO(String email, String password) {
         this.email = email;
         this.password = password;
-        this.role = role;
+
     }
 
     public String getEmail() {
@@ -30,12 +29,5 @@ public class LoginRequestDTO {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
 

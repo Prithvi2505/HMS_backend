@@ -1,8 +1,5 @@
 package com.example.HMS.Service;
 
-
-
-import com.example.HMS.DTO.LoginRequestDTO;
 import com.example.HMS.Entity.AuthUserDetails;
 import com.example.HMS.Entity.Doctor;
 import com.example.HMS.Entity.Patient;
@@ -27,42 +24,40 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // Try to find user in Patient repo
         Patient patient = patientRepo.findByEmail(email);
-        if (patient != null) return new AuthUserDetails(email, patient.getPassword(), "PATIENT",patient.getId());
+        if (patient != null) {
+            return new AuthUserDetails(email, patient.getPassword(), "patient", patient.getId());
+        }
 
+        // Try Doctor repo
         Doctor doctor = doctorRepo.findByEmail(email);
-        if (doctor != null) return new AuthUserDetails(email, doctor.getPassword(), "DOCTOR",doctor.getId());
+        if (doctor != null) {
+            return new AuthUserDetails(email, doctor.getPassword(), "doctor", doctor.getId());
+        }
 
+        // Try Staff repo
         Staff staff = staffRepo.findByEmail(email);
-        if (staff != null) return new AuthUserDetails(email, staff.getPassword(), "STAFF",staff.getId());
+        if (staff != null) {
+            return new AuthUserDetails(email, staff.getPassword(), "staff", staff.getId());
+        }
 
+        // Not found
         throw new UsernameNotFoundException("User not found with email: " + email);
     }
-    public int getUserIdFromRepo(LoginRequestDTO dto) {
-        String email = dto.getEmail();
-        String role = dto.getRole().toLowerCase();
 
-        switch (role) {
-            case "patient":
-                return patientRepo.findByEmail(email).getId();
-            case "doctor":
-                return doctorRepo.findByEmail(email).getId();
-            case "staff":
-                return staffRepo.findByEmail(email).getId();
-            default:
-                throw new IllegalArgumentException("Invalid role: " + role);
-        }
-    }
     public int getLoggedInUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AuthUserDetails userDetails = (AuthUserDetails) auth.getPrincipal();
         return userDetails.getUserId();
     }
 
+    /**
+     * Get logged-in user Role from Security Context
+     */
     public String getLoggedInUserRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AuthUserDetails userDetails = (AuthUserDetails) auth.getPrincipal();
-        return userDetails.getRole(); // "PATIENT", "DOCTOR", "STAFF"
+        return userDetails.getRole(); // PATIENT / DOCTOR / STAFF
     }
 }
-
