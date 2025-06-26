@@ -5,6 +5,7 @@ import com.example.HMS.DTO.LoginResponseDTO;
 import com.example.HMS.Entity.AuthUserDetails;
 import com.example.HMS.Service.AuthUserDetailsService;
 import com.example.HMS.Util.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ public class AuthController {
     /**
      * Health check endpoint
      */
+    @Operation(summary = "Health Checker")
     @GetMapping("/login")
     public String healthCheck() {
         return "Authentication API is working";
@@ -37,6 +39,7 @@ public class AuthController {
      * Login endpoint: accepts email + password,
      * returns token with email, role, and user ID
      */
+    @Operation(summary = "Creating Token")
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
         try {
