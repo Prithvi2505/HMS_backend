@@ -1,5 +1,6 @@
 package com.example.HMS.Controller;
 
+import com.example.HMS.DTO.PatientNameIdDTO;
 import com.example.HMS.DTO.PatientRequestDTO;
 import com.example.HMS.DTO.PatientResponseDTO;
 import com.example.HMS.DTO.PatientUpdateRequestDTO;
@@ -47,6 +48,13 @@ public class PatientController {
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public PatientResponseDTO updatePatient(@Valid @PathVariable int id, @RequestBody PatientUpdateRequestDTO dto) {
         return patientService.updatePatient(id, dto);
+    }
+
+    @Operation(summary = "Getting Patient by Name")
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public List<PatientNameIdDTO> searchPatients(@RequestParam String name) {
+        return patientService.searchByName(name);
     }
 
     @Operation(summary = "Deleting Patient by ID")

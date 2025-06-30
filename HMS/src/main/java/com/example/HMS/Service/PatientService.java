@@ -1,5 +1,6 @@
 package com.example.HMS.Service;
 
+import com.example.HMS.DTO.PatientNameIdDTO;
 import com.example.HMS.DTO.PatientRequestDTO;
 import com.example.HMS.DTO.PatientResponseDTO;
 import com.example.HMS.DTO.PatientUpdateRequestDTO;
@@ -79,6 +80,13 @@ public class PatientService {
 
         return toResponseDTO(patientRepository.save(patient));
     }
+    public List<PatientNameIdDTO> searchByName(String name) {
+        return patientRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(p -> new PatientNameIdDTO(p.getId(), p.getName()))
+                .collect(Collectors.toList());
+    }
+
 
     public void deletePatient(int id) {
         int loggedInUserId = authUserDetailsService.getLoggedInUserId();

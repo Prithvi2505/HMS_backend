@@ -1,5 +1,6 @@
 package com.example.HMS.Service;
 
+import com.example.HMS.DTO.DoctorNameIdDTO;
 import com.example.HMS.DTO.DoctorRequestDTO;
 import com.example.HMS.DTO.DoctorResponseDTO;
 import com.example.HMS.DTO.DoctorUpdateRequestDTO;
@@ -59,6 +60,12 @@ public class DoctorService {
         doctor.setYearOfExperience(dto.getYearOfExperience());
         doctor.setMaxAppointmentsPerDay(dto.getMaxAppointmentsPerDay());
         return toResponseDTO(doctorRepository.save(doctor));
+    }
+    public List<DoctorNameIdDTO> searchByName(String name) {
+        return doctorRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(doc -> new DoctorNameIdDTO(doc.getId(), doc.getName()))
+                .collect(Collectors.toList());
     }
 
     public void deleteDoctor(int id) {
