@@ -20,7 +20,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Job Portal API")
+                        .title(" API")
                         .version("1.0")
                         .description("Spring Boot 3 REST API for managing users, resumes, and job applications")
                         .contact(new Contact()

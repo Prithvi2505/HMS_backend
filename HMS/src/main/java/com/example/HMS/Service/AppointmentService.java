@@ -9,6 +9,7 @@ import com.example.HMS.Repository.AppointmentRepository;
 import com.example.HMS.Repository.DoctorRepository;
 import com.example.HMS.Repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class AppointmentService {
 
+    private static final int MAX_SLOTS_PER_TIME = 1;
+
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
@@ -37,14 +40,19 @@ public class AppointmentService {
 
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
         try {
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(dto.getDate(), formatter);
             LocalTime localTime = LocalTime.parse(dto.getTime());
 
+            if (!isDoctorAvailable(dto.getDoctorId(), localDate, localTime)) {
+                throw new IllegalStateException("Doctor is not available at this time.");
+            }
             Patient patient = patientRepository.findById(dto.getPatientId())
                     .orElseThrow(() -> new RuntimeException("Patient not found"));
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
 
             // 🔒 Limit check logic here
             int count = appointmentRepository.countByDoctorIdAndDate(doctor.getId(), localDate);
@@ -72,6 +80,14 @@ public class AppointmentService {
     public int countAppointments(int doctorId, LocalDate date) {
         return appointmentRepository.countByDoctorIdAndDate(doctorId, date);
     }
+
+    public boolean isDoctorAvailable(int doctorId, LocalDate date, LocalTime time) {
+        List<Appointment> existingAppointments =
+                appointmentRepository.findByDoctorIdAndDateAndTime(doctorId, date, time);
+
+        return existingAppointments.size() < MAX_SLOTS_PER_TIME;
+    }
+
 
     public List<AppointmentResponseDTO> getAllAppointments() {
         return appointmentRepository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());

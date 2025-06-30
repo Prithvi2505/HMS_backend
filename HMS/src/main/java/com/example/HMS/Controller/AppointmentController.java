@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,19 @@ public class AppointmentController {
     public AppointmentResponseDTO getAppointmentById(@PathVariable int id) {
         return appointmentService.getAppointmentById(id);
     }
+
+    @Operation(summary = "Checking avaliability of doctor on a specific time and date ")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    @GetMapping("/check-availability")
+    public ResponseEntity<Boolean> isDoctorAvailable(
+            @RequestParam int doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time
+    ) {
+        boolean available = appointmentService.isDoctorAvailable(doctorId, date, time);
+        return ResponseEntity.ok(available);
+    }
+
 
     @Operation(summary = "Deleting Appointment by ID")
     @DeleteMapping("/{id}")
