@@ -42,7 +42,7 @@ public class AppointmentController {
 //        return appointmentService.createAppointment(dto);
 //    }
 
-    @Operation(summary = "Getting the count of Appointment left of a paticular Doctor")
+    @Operation(summary = "Getting the count of Appointment done of a paticular Doctor")
     @GetMapping("/count")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
     public ResponseEntity<Integer> getCount(
@@ -109,6 +109,17 @@ public class AppointmentController {
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         List<String> bookedTimes = appointmentService.getBookedTimesByDoctorAndDate(doctorId, date);
         return ResponseEntity.ok(bookedTimes);
+    }
+
+    @Operation(summary = "Getting available time slot of a specific doctor on a specific date")
+    @GetMapping("/available-timeslots/{doctorId}/{date}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public ResponseEntity<List<String>> getAvailableTimeSlots(
+            @PathVariable int doctorId,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        List<String> slots = appointmentService.getAvailableTimeSlots(doctorId, date);
+        return ResponseEntity.ok(slots);
     }
 
 

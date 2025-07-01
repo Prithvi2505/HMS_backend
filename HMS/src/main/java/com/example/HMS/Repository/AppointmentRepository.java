@@ -14,6 +14,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     List<Appointment> findByDoctorId(int doctorId);
     int countByDoctorIdAndDate(int doctorId, LocalDate date);
     List<Appointment> findByDoctorIdAndDateAndTime(int doctorId, LocalDate date, LocalTime time);
+    List<Appointment> findByDoctorIdAndDate(int doctorId, LocalDate date);
+
 
     @Query("SELECT a.time FROM Appointment a WHERE a.doctor.id = :doctorId AND a.date = :date")
     List<LocalTime> findTimesByDoctorIdAndDate(@Param("doctorId") int doctorId, @Param("date") LocalDate date);

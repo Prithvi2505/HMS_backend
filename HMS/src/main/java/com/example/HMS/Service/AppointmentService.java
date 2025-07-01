@@ -19,8 +19,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,6 +89,33 @@ public class AppointmentService {
 
         return existingAppointments.size() < MAX_SLOTS_PER_TIME;
     }
+
+    public List<String> getAvailableTimeSlots(int doctorId, LocalDate date) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        LocalTime start = doctor.getStartTime(); // e.g. 09:00
+        LocalTime end = doctor.getEndTime();     // e.g. 17:00
+        int interval = 60;
+        List<String> allSlots = new ArrayList<>();
+        LocalTime time = start;
+        while (!time.isAfter(end.minusMinutes(interval))) {
+            allSlots.add(time.toString().substring(0, 5)); // format "HH:mm"
+            time = time.plusMinutes(interval);
+        }
+        List<Appointment> bookedAppointments = appointmentRepository
+                .findByDoctorIdAndDate(doctorId, date);
+
+        Set<String> bookedTimes = bookedAppointments.stream()
+                .map(a -> a.getTime().toString().substring(0, 5)) // "HH:mm"
+                .collect(Collectors.toSet());
+
+        return allSlots.stream()
+                .filter(slot -> !bookedTimes.contains(slot))
+                .collect(Collectors.toList());
+    }
+
+
 
 
     public List<AppointmentResponseDTO> getAllAppointments() {
