@@ -101,6 +101,14 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
+    public List<String> getBookedTimesByDoctorAndDate(int doctorId, LocalDate date) {
+        List<LocalTime> times = appointmentRepository.findTimesByDoctorIdAndDate(doctorId, date);
+        return times.stream()
+                .map(time -> time.format(DateTimeFormatter.ofPattern("HH:mm"))) // returns "HH:mm:ss", you can trim if needed
+                .collect(Collectors.toList());
+    }
+
+
     public List<AppointmentResponseDTO> getAppointmentsByPatientId(int patientId) {
         return appointmentRepository.findByPatientId(patientId)
                 .stream().map(this::toResponseDTO).collect(Collectors.toList());

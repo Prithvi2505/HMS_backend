@@ -12,6 +12,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +33,13 @@ public class DoctorService {
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
         doctor.setMaxAppointmentsPerDay(dto.getMaxAppointmentsPerDay());
+        doctor.setStartTime(LocalTime.parse(dto.getStartTime()));
+        doctor.setEndTime(LocalTime.parse(dto.getEndTime()));
+        doctor.setAvailableDays(dto.getAvailableDays().stream()
+                .map(String::toUpperCase)
+                .map(DayOfWeek::valueOf)
+                .collect(Collectors.toList()));
+
         // Encrypt password
         doctor.setPassword(passwordEncoder.encode(dto.getPassword()));
         return toResponseDTO(doctorRepository.save(doctor));
@@ -92,6 +101,13 @@ public class DoctorService {
         dto.setSpecialization(doctor.getSpecialization());
         dto.setYearOfExperience(doctor.getYearOfExperience());
         dto.setMaxAppointmentsPerDay(doctor.getMaxAppointmentsPerDay());
+        dto.setStartTime(doctor.getStartTime().toString());
+        dto.setEndTime(doctor.getEndTime().toString());
+        dto.setAvailableDays(
+                doctor.getAvailableDays().stream()
+                        .map(DayOfWeek::name)
+                        .collect(Collectors.toList())
+        );
         return dto;
     }
 }

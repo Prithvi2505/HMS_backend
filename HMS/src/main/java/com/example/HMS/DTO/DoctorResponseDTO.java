@@ -2,6 +2,8 @@ package com.example.HMS.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 public class DoctorResponseDTO {
     private int id;
     private String name;
@@ -10,6 +12,10 @@ public class DoctorResponseDTO {
     private String specialization;
     private int yearOfExperience;
     private int maxAppointmentsPerDay;
+    private String startTime;
+    private String endTime;
+    private List<String> availableDays;
+
 
 
 
@@ -67,5 +73,29 @@ public class DoctorResponseDTO {
 
     public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<String> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<String> availableDays) {
+        this.availableDays = availableDays;
     }
 }

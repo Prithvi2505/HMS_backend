@@ -3,6 +3,8 @@ package com.example.HMS.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +36,17 @@ public class Doctor {
     @Column(name = "maxAppointmentsPerDay")
     private int maxAppointmentsPerDay;
 
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "end_time")
+    private LocalTime endTime;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Column(name = "available_days")
+    private List<DayOfWeek> availableDays;
+
     @OneToMany(mappedBy = "doctor",cascade = CascadeType.ALL)
     private List<Patient> patients = new ArrayList<>();
 
@@ -42,7 +55,8 @@ public class Doctor {
 
     public Doctor() {}
 
-    public Doctor(String name, String email, String gender, String specialization, int yearOfExperience, String password, int maxAppointmentsPerDay, List<Patient> patients, List<Appointment> appointments) {
+    public Doctor(int id, String name, String email, String gender, String specialization, int yearOfExperience, String password, int maxAppointmentsPerDay, LocalTime startTime, LocalTime endTime, List<DayOfWeek> availableDays, List<Patient> patients, List<Appointment> appointments) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.gender = gender;
@@ -50,6 +64,9 @@ public class Doctor {
         this.yearOfExperience = yearOfExperience;
         this.password = password;
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.availableDays = availableDays;
         this.patients = patients;
         this.appointments = appointments;
     }
@@ -132,5 +149,29 @@ public class Doctor {
 
     public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<DayOfWeek> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<DayOfWeek> availableDays) {
+        this.availableDays = availableDays;
     }
 }

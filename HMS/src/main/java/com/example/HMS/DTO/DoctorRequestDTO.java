@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 public class DoctorRequestDTO {
     @NotBlank(message = "Name is required")
     private String name;
@@ -29,6 +31,13 @@ public class DoctorRequestDTO {
     @NotBlank(message = "Gender is required")
     private String gender;
 
+    @NotBlank(message = "Start Time is required")
+    private String startTime;
+    @NotBlank(message = "End Time is required")
+    private String endTime;
+
+    private List<String> availableDays;
+
     public String getGender() {
         return gender;
     }
@@ -37,7 +46,7 @@ public class DoctorRequestDTO {
         this.gender = gender;
     }
 
-    public DoctorRequestDTO(String name, String email, String specialization, int yearOfExperience, int maxAppointmentsPerDay, String password, String gender) {
+    public DoctorRequestDTO(String name, String email, String specialization, int yearOfExperience, int maxAppointmentsPerDay, String password, String gender, String startTime, String endTime, List<String> availableDays) {
         this.name = name;
         this.email = email;
         this.specialization = specialization;
@@ -45,6 +54,9 @@ public class DoctorRequestDTO {
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
         this.password = password;
         this.gender = gender;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.availableDays = availableDays;
     }
 
     public String getName() {
@@ -93,5 +105,29 @@ public class DoctorRequestDTO {
 
     public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<String> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<String> availableDays) {
+        this.availableDays = availableDays;
     }
 }

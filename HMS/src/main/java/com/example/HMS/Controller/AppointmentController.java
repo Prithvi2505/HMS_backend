@@ -100,6 +100,18 @@ public class AppointmentController {
     public List<AppointmentResponseDTO> getAppointmentsByDoctor(@PathVariable int doctorId) {
         return appointmentService.getAppointmentsByDoctorId(doctorId);
     }
+
+    @Operation(summary = "Getting Booked time od a specific doctor on a specific date")
+    @GetMapping("/{doctorId}/{date}")
+    @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
+    public ResponseEntity<List<String>> getDoctorAppointmentsForDate(
+            @PathVariable int doctorId,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        List<String> bookedTimes = appointmentService.getBookedTimesByDoctorAndDate(doctorId, date);
+        return ResponseEntity.ok(bookedTimes);
+    }
+
+
     @Operation(summary = "Updating Appointment By ID")
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR', 'PATIENT')")
