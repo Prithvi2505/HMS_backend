@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -55,8 +56,6 @@ public class AppointmentService {
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-
-            // 🔒 Limit check logic here
             int count = appointmentRepository.countByDoctorIdAndDate(doctor.getId(), localDate);
             if (count >= doctor.getMaxAppointmentsPerDay()) {
                 throw new IllegalStateException("Doctor has reached the appointment limit for this day.");
@@ -83,24 +82,34 @@ public class AppointmentService {
         return appointmentRepository.countByDoctorIdAndDate(doctorId, date);
     }
 
+
     public boolean isDoctorAvailable(int doctorId, LocalDate date, LocalTime time) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+        DayOfWeek day = date.getDayOfWeek();
+        if (!doctor.getAvailableDays().contains(day)) {
+            return false; // Doctor doesn't work on this day
+        }
+        if (time.isBefore(doctor.getStartTime()) || time.isAfter(doctor.getEndTime())) {
+            return false; // Time is outside working hours
+        }
         List<Appointment> existingAppointments =
                 appointmentRepository.findByDoctorIdAndDateAndTime(doctorId, date, time);
-
         return existingAppointments.size() < MAX_SLOTS_PER_TIME;
     }
+
 
     public List<String> getAvailableTimeSlots(int doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        LocalTime start = doctor.getStartTime(); // e.g. 09:00
-        LocalTime end = doctor.getEndTime();     // e.g. 17:00
+        LocalTime start = doctor.getStartTime();
+        LocalTime end = doctor.getEndTime();
         int interval = 60;
         List<String> allSlots = new ArrayList<>();
         LocalTime time = start;
         while (!time.isAfter(end.minusMinutes(interval))) {
-            allSlots.add(time.toString().substring(0, 5)); // format "HH:mm"
+            allSlots.add(time.toString().substring(0, 5));
             time = time.plusMinutes(interval);
         }
         List<Appointment> bookedAppointments = appointmentRepository
@@ -177,6 +186,20 @@ public class AppointmentService {
 
             Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                     .orElseThrow(() -> new RuntimeException("Doctor not found with ID: " + dto.getDoctorId()));
+
+            if (!isDoctorAvailable(doctor.getId(), localDate, localTime)) {
+                throw new IllegalStateException("Doctor is not available at this time.");
+            }
+
+            boolean isDateOrDoctorChanged = !localDate.equals(existingAppointment.getDate())
+                    || doctor.getId() != existingAppointment.getDoctor().getId();
+
+            if (isDateOrDoctorChanged) {
+                int count = appointmentRepository.countByDoctorIdAndDate(doctor.getId(), localDate);
+                if (count >= doctor.getMaxAppointmentsPerDay()) {
+                    throw new IllegalStateException("Doctor has reached the appointment limit for this day.");
+                }
+            }
 
             existingAppointment.setDate(localDate);
             existingAppointment.setTime(localTime);

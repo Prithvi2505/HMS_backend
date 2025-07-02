@@ -101,7 +101,7 @@ public class AppointmentController {
         return appointmentService.getAppointmentsByDoctorId(doctorId);
     }
 
-    @Operation(summary = "Getting Booked time od a specific doctor on a specific date")
+    @Operation(summary = "Getting Booked time of a specific doctor on a specific date")
     @GetMapping("/{doctorId}/{date}")
     @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR', 'PATIENT')")
     public ResponseEntity<List<String>> getDoctorAppointmentsForDate(

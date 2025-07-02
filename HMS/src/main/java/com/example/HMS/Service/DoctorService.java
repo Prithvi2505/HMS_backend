@@ -68,6 +68,12 @@ public class DoctorService {
         doctor.setSpecialization(dto.getSpecialization());
         doctor.setYearOfExperience(dto.getYearOfExperience());
         doctor.setMaxAppointmentsPerDay(dto.getMaxAppointmentsPerDay());
+        doctor.setStartTime(LocalTime.parse(dto.getStartTime()));
+        doctor.setEndTime(LocalTime.parse(dto.getEndTime()));
+        doctor.setAvailableDays(dto.getAvailableDays().stream()
+                .map(String::toUpperCase)
+                .map(DayOfWeek::valueOf)
+                .collect(Collectors.toList()));
         return toResponseDTO(doctorRepository.save(doctor));
     }
     public List<DoctorNameIdDTO> searchByName(String name) {

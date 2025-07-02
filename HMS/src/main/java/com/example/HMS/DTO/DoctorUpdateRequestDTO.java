@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 public class DoctorUpdateRequestDTO {
     @NotBlank(message = "Name is required")
     private String name;
@@ -20,12 +22,22 @@ public class DoctorUpdateRequestDTO {
     @Min(value = 0, message = "Appointments Per Day must be positive")
     private int maxAppointmentsPerDay;
 
-    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience, String gender, int maxAppointmentsPerDay) {
+    @NotBlank(message = "Start Time is required")
+    private String startTime;
+    @NotBlank(message = "End Time is required")
+    private String endTime;
+
+    private List<String> availableDays;
+
+    public DoctorUpdateRequestDTO(String name, String specialization, int yearOfExperience, String gender, int maxAppointmentsPerDay, String startTime, String endTime, List<String> availableDays) {
         this.name = name;
         this.specialization = specialization;
         this.yearOfExperience = yearOfExperience;
         this.gender = gender;
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.availableDays = availableDays;
     }
 
     public String getName() {
@@ -66,5 +78,29 @@ public class DoctorUpdateRequestDTO {
 
     public void setMaxAppointmentsPerDay(int maxAppointmentsPerDay) {
         this.maxAppointmentsPerDay = maxAppointmentsPerDay;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<String> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<String> availableDays) {
+        this.availableDays = availableDays;
     }
 }
